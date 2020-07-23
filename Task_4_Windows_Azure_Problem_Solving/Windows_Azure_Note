@@ -1,0 +1,44 @@
+###############A short description of your troubleshooting process.#########################
+
+1)Application Pool of the corresponding Wep Application is Stopped –In an IIS server, the domains are assigned to application pools, some dedicated and some shared. If the associated application pool for a domain is in stopped or disabled state, it would cause the website to show “HTTP Error 503. The service is unavailable.” message.
+2)Any misconfiguration in the application pool or site settings, such as spawning applications in 32-bit mode, that can tamper with its proper functioning, can cause error in the site. Improper IIS configuration have noted to cause the worker process to fail. Process crashes also happen due to incorrect application logic. In some cases, the web server protocol may not be enabled in the site settings, and the site can show up ‘HTTP Error 503.’
+3)Issues related to the user Identity of application Pool – An application pool is associated with a user identity, which allows you to run that application pool under a unique account. This user account can get locked at times, can have its password expired, or may not have adequate privileges to run the application pool. Any of these issues can tamper with the website functioning.
+4)Application pool running out of RAM or other server resources, causing it to crash, often lead to ‘HTTP Error 503.’
+5)Server migrations have also seen to have caused such errors in the website, if the IIS configuration settings of two servers are not compatible with each other, which can affect domain performance.
+ 
+##########################Tell us what's wrong - With IIS, the error message "HTTP Error 503.################################# 
+
+The identity of application pool DefaultAppPool is invalid. The user name or password that is specified for the identity is incorrect, the user not
+having batch logon rights. If the identity is not corrected, the application pool will be disabled when the application pool receives its first request.
+If batch logon rights are causing the problem, the identity in the IIS configuration store must be changed after rights have been granted before 
+Windows Process Activation Service (WAS) can retry the logon. If the identity remains invalid after the first request for the application pool is processed, 
+the application pool will be disabled.
+The service is unavailable." typically means the site itself is running but the application pool (connection) associated with the site is stopped.
+ 
+##########################Explain what you did to fix it#######################
+
+Open Internet Information Services (IIS) Manager:
+
+On the taskbar, click Server Manager, click Tools, and then click Internet Information Services (IIS) Manager.
+
+Click Administrative Tools, and then double-click Internet Information Services (IIS) Manager.
+
+Double-click Administrative Tools, and then double-click Internet Information Services (IIS) Manager.
+
+In the Connections pane, expand the server name, and then click Application Pools.
+
+In the Actions pane, click Add Application Pool....
+
+In the Add Application Pool dialog box, 
+enter the name (Alan) of the application pool in the Name: box, in the .NET Framework version: drop-down list select the .NET Framework version your site 
+or application uses, in the Managed pipeline mode: drop-down list select Integrated, and then click OK.
+
+Configure the application pool for an existing site or application
+
+In the Connections pane, expand Sites, and then navigate to the Web site or application you want to add (Alan) to the application pool.
+In the Actions pane, click Advanced Settings...
+In the General section of the Advanced Settings dialog box, click the Application Pool entry, and then click the ellipses button.
+
+In the Select Application Pool dialog box, select the application pool (Alan) from the Application pool: drop-down box, click OK, and then click OK again.
+
+Open the URL:http://localhost in browser it works.

@@ -1,0 +1,60 @@
+################A short description of your troubleshooting process.###########################
+
+Started with the basic troubleshooting by executing some of the following commands
+###############################################################################################
+uname -a
+df -h (Checked the disk space for any issue)
+sudo ls -ltr
+ls | grep redis
+/usr/bin/redis-server /etc/redis/redis.conf (Checked with manual run)
+sudo vi redis-server.log (Checked with log files)
+cd /etc/systemd/system/
+redis-cli info 
+sudo tail -f /var/log/syslog  (Checked with syslog for any system error)
+journalctl -xe
+sudo apt-get update
+sudo apt-get upgrade
+redis-server --version
+redis-cli --version (Checked with version to find the issue)
+redis-cli
+sudo iptables -A INPUT -p tcp --dport 6379 -j ACCEPT  (Checked with firewall connection)
+sudo systemctl unmask  redis-server.service
+sudo chmod 770 /var/lib/redis
+ping google.com (Checked for network connectivity)
+sudo systemctl enable redis-server.service 
+ps aux |grep redis
+netstat -nap |grep 6379 (Checked for port connectivity)
+sudo su -
+sudo systemctl status redis-server.service
+sudo vim /etc/redis/redis.conf
+sudo systemctl daemon-reload
+sudo systemctl restart redis-server.service
+sudo vim /etc/redis/redis.conf
+sudo systemctl status
+sudo systemctl --failed (Checked for systemctl failed status)
+sudo systemctl isolate reboot.target (Rebooted the target system to make the changes to apply)
+sudo netstat -a -p TCP -n | grep 6379
+##################################################################################################
+
+##############################Tell us what's wrong################################################
+
+Found that the issue is related to kernel systemctl 
+Got the error with the command - sudo systemctl status
+systemctl status showed degraded units
+
+Then when checked for failed status 
+sudo systemctl --failed shows detailed description of redis units failed with degraded issue.
+
+  UNIT                    LOAD   ACTIVE SUB    DESCRIPTION
+● redis-server.service    loaded failed failed Advanced key-value store
+
+
+###########################Explain what you did to fix it#########################################
+
+There is a file in /etc/default/grub (Bootloader), which contains grub setting, in the file there is a kernel variable called crashkernel, the error has to do 
+with this setting, auto is default, but depending on how much memory you have auto setting is too big, so setting it to a smaller size (128) makes the error go away. 
+
+After setting the value to crashkernel=128 and rebooting solved the issue. (systemctl isolate reboot.target)
+
+Then checked with the command sudo systemctl status redis-server.service Redis service was running successfully.
+ 

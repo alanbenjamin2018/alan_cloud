@@ -1,0 +1,17 @@
+#!/bin/bash
+
+sudo apt-get update
+
+sudo apt-get install docker.io -y
+
+# add current user to docker group so there is no need to use sudo when running docker
+sudo usermod -aG docker $(whoami)
+
+sudo docker pull docker.elastic.co/elasticsearch/elasticsearch:7.8.0
+
+screen -d -L -m sudo docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.8.0
+
+sudo curl -X GET "localhost:9200/_cat/nodes?v&pretty"
+
+#sudo curl -XGET 'localhost:9200/?pretty'
+
